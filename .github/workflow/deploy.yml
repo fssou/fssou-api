@@ -1,0 +1,48 @@
+name: Deployment Infrastructure
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_PROJECT_NAME: ${{ secrets.GCP_PROJECT_NAME }}
+  GCP_TF_STATE_BUCKET: ${{ secrets.GCP_TF_STATE_BUCKET }}
+  GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+  GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+jobs:
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - id: gcp-auth
+        name: OIDC Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          create_credentials_file: true
+          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
+      - name: Terraform Set up
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.6.0
+      - name: Terraform Initialize
+        run: terraform init
+      - name: Terraform Plan Changes
+        run: > 
+          terraform plan
+          -var="project_id=${{ env.GCP_PROJECT_ID }}"
+          -var="state_bucket=${{ env.GCP_TF_STATE_BUCKET }}"
+          -var="project_id=${{ env.GCP_PROJECT_ID }}"
+          -var="project_name=${{ env.GCP_PROJECT_NAME }}"
+          -var="gh_repo_id=${{ env.GITHUB_REPOSITORY_ID }}"
+          -out=${{ env.GITHUB_SHA }}.tfplan
+      - name: Terraform Apply Changes
+        run: terraform apply ${{ env.GITHUB_SHA }}.tfplan

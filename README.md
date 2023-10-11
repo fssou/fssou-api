@@ -1,4 +1,3 @@
+"# fssou-api"
 
-GCP_PROJECT_ID
-GCP_TF_STATE_BUCKET
-"# fssou-api" 
+

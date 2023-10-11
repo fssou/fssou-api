@@ -10,13 +10,6 @@ on:
     branches:
       - main
 
-env:
-  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  GCP_PROJECT_NAME: ${{ secrets.GCP_PROJECT_NAME }}
-  GCP_TF_STATE_BUCKET: ${{ secrets.GCP_TF_STATE_BUCKET }}
-  GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-  GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-
 jobs:
   terraform:
     name: Terraform
@@ -41,9 +34,9 @@ jobs:
       - name: Terraform Configure
         working-directory: infra
         run: | 
-          echo 'state_bucket="${{ env.GCP_PROJECT_ID }}"' >> generated.auto.tfvars
-          echo 'project_id="${{ env.GCP_TF_STATE_BUCKET }}"' >> generated.auto.tfvars
-          echo 'project_name="${{ env.GCP_PROJECT_NAME }}"' >> generated.auto.tfvars
+          echo 'state_bucket="${{ secrets.GCP_PROJECT_ID }}"' >> generated.auto.tfvars
+          echo 'project_id="${{ secrets.GCP_TF_STATE_BUCKET }}"' >> generated.auto.tfvars
+          echo 'project_name="${{ secrets.GCP_PROJECT_NAME }}"' >> generated.auto.tfvars
           echo 'gh_repo_id="${{ github.repository_id }}"' >> generated.auto.tfvars
       - name: Terraform Initialize
         run: terraform -chdir=infra init

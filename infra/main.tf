@@ -7,7 +7,7 @@ resource "google_cloud_run_service" "main" {
   name     = "api-francl-in"
   location = "us-central1"
   metadata {
-    namespace = var.project_name
+    namespace = var.project_id
   }
   template {
     spec {
@@ -22,7 +22,7 @@ resource "google_cloud_run_domain_mapping" "main" {
   name     = "api.francl.in"
   location = "us-central1"
   metadata {
-    namespace = var.project_name
+    namespace = var.project_id
   }
   spec {
     route_name = google_cloud_run_service.main.name

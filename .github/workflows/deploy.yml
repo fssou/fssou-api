@@ -6,7 +6,7 @@ on:
       - main
   pull_request:
     types:
-      - "closed"
+      - closed
     branches:
       - main
 
@@ -27,13 +27,13 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - id: gcp-auth
+      - id: auth
         name: OIDC Google Cloud
         uses: google-github-actions/auth@v1
         with:
-          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
-          audience: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          create_credentials_file: "true"
+          workload_identity_provider: projects/320414989833/locations/global/workloadIdentityPools/gh-fssou/providers/gh-actions
+          service_account: gh-fssou-api@francl-in.iam.gserviceaccount.com
       - name: Terraform Set up
         uses: hashicorp/setup-terraform@v1
         with:

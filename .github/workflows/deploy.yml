@@ -31,7 +31,6 @@ jobs:
         name: OIDC Google Cloud
         uses: google-github-actions/auth@v1
         with:
-          create_credentials_file: true
           workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
           audience: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}

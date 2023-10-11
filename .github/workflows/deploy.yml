@@ -34,6 +34,7 @@ jobs:
           create_credentials_file: true
           workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
+          audience: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
       - name: Terraform Set up
         uses: hashicorp/setup-terraform@v1
         with:

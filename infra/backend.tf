@@ -1,7 +1,7 @@
 
 terraform {
   backend "gcs" {
-    bucket = var.state_bucket
-    prefix = "terraform/state/${var.gh_repo_id}"
+    bucket = "staging.francl-in.appspot.com"
+    prefix = "terraform/state/fssou-api"
   }
 }

@@ -38,18 +38,16 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.6.0
-      - name: Terraform Initialize
-        working-directory: infra
-        run: terraform init
-      - name: Terraform Plan Changes
+      - name: Terraform Configure
         working-directory: infra
         run: > 
-          terraform plan
-          -var="project_id=${{ env.GCP_PROJECT_ID }}"
-          -var="state_bucket=${{ env.GCP_TF_STATE_BUCKET }}"
-          -var="project_id=${{ env.GCP_PROJECT_ID }}"
-          -var="project_name=${{ env.GCP_PROJECT_NAME }}"
-          -var="gh_repo_id=${{ github.repository_id }}"
-          -out=${{ github.sha }}.tfplan
+          echo 'state_bucket="${{ env.GCP_PROJECT_ID }}"' >> generated.auto.tfvars
+          echo 'project_id="${{ env.GCP_TF_STATE_BUCKET }}"' >> generated.auto.tfvars
+          echo 'project_name="${{ env.GCP_PROJECT_NAME }}"' >> generated.auto.tfvars
+          echo 'gh_repo_id="${{ github.repository_id }}"' >> generated.auto.tfvars
+      - name: Terraform Initialize
+        run: terraform -chdir=infra init
+      - name: Terraform Plan Changes
+        run: terraform -chdir=infra plan -out=${{ github.sha }}.tfplan
       - name: Terraform Apply Changes
-        run: terraform apply ${{ github.sha }}.tfplan
+        run: terraform -chdir=infra apply -auto-approve ${{ github.sha }}.tfplan

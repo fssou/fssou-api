@@ -39,8 +39,10 @@ jobs:
         with:
           terraform_version: 1.6.0
       - name: Terraform Initialize
+        working-directory: infra
         run: terraform init
       - name: Terraform Plan Changes
+        working-directory: infra
         run: > 
           terraform plan
           -var="project_id=${{ env.GCP_PROJECT_ID }}"

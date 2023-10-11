@@ -3,22 +3,18 @@ provider "google" {
   region  = "us-central1"
 }
 
-resource "google_cloud_run_service" "main" {
+resource "google_cloud_run_v2_service" "main" {
   name     = "api-francl-in"
   location = "us-central1"
-  metadata {
-    namespace = var.project_id
-  }
   template {
-    spec {
-      containers {
-        image = "us-docker.pkg.dev/cloudrun/container/hello"
-      }
+    containers {
+      image = "us-docker.pkg.dev/cloudrun/container/hello"
     }
   }
 }
 
 resource "google_cloud_run_domain_mapping" "main" {
+  depends_on = [ google_cloud_run_v2_service.main ]
   name     = "api.francl.in"
   location = "us-central1"
   metadata {

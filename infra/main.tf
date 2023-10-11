@@ -21,6 +21,6 @@ resource "google_cloud_run_domain_mapping" "main" {
     namespace = var.project_id
   }
   spec {
-    route_name = google_cloud_run_service.main.name
+    route_name = google_cloud_run_v2_service.main.name
   }
 }

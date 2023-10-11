@@ -7,6 +7,7 @@ provider "google" {
 resource "google_cloud_run_v2_service" "main" {
   name     = "api-francl-in"
   location = "us-central1"
+  ingress = "INGRESS_TRAFFIC_ALL"
   template {
     containers {
       image = "us-docker.pkg.dev/cloudrun/container/hello"
@@ -24,4 +25,13 @@ resource "google_cloud_run_domain_mapping" "main" {
   spec {
     route_name = google_cloud_run_v2_service.main.name
   }
+}
+
+resource "google_cloud_run_v2_service_iam_binding" "main" {
+  name  = google_cloud_run_v2_service.main.name
+  location = google_cloud_run_v2_service.main.location
+  role     = "roles/run.invoker"
+  members = [
+    "allUsers"
+  ]
 }

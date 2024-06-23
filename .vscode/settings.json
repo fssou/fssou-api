@@ -1,6 +1,5 @@
 {
     "yaml.schemas": {
-        "file:///c%3A/Users/fssou/.vscode/extensions/docsmsft.docs-yaml-1.0.4/dist/toc.schema.json": "/toc\\.yml/i",
         "https://json.schemastore.org/github-workflow.json": [
             ".github/workflow/deploy.yml",
             "file:///w%3A/ws/repos/github/fssou/fssou-api/.github/workflows/deploy.yml"

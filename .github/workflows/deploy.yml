@@ -16,7 +16,7 @@ env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   AWS_ROLE_SESSION_NAME: github-actions-${{ github.run_id }}
   TF_STATE_BUCKET_NAME: ${{ secrets.TF_STATE_BUCKET_NAME }}
-  ARTIFACT_NAME: ${{ github.repository }}-${{ github.sha }}
+  ARTIFACT_NAME: fssou-api-${{ github.sha }}
 
 jobs:
   build:

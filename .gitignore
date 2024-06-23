@@ -1,4 +1,14 @@
+.idea
 
+
+.vscode
 .terraform
 *.hcl
-*generated.auto.tfvars
+*.auto.tfvars
+
+# golang
+*.exe
+*.dll
+*.so
+*.dylib
+go.sum

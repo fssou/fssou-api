@@ -1,13 +1,8 @@
-
-variable "project_id" {
+variable "aws_region" {
   type = string
 }
 
-variable "project_name" {
-  type = string
-}
-
-variable "state_bucket" {
+variable "gh_repo_name" {
   type = string
 }
 

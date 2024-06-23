@@ -10,37 +10,89 @@ on:
     branches:
       - main
 
+env:
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ROLE_SESSION_NAME: github-actions-${{ github.run_id }}
+  TF_STATE_BUCKET_NAME: ${{ secrets.TF_STATE_BUCKET_NAME }}
+  ARTIFACT_NAME: ${{ github.repository }}-${{ github.sha }}
+
 jobs:
-  terraform:
-    name: Terraform
+  build:
+    name: Build
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
+    defaults:
+      run:
+        working-directory: app
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - id: auth
-        name: OIDC Google Cloud
-        uses: google-github-actions/auth@v1
+      - name: Set up Go
+        uses: actions/setup-go@v5
         with:
-          create_credentials_file: "true"
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-      - name: Terraform Set up
-        uses: hashicorp/setup-terraform@v1
+          go-version-file: app/go.mod
+      - name: Build
+        run: GOOS=linux GOARCH=amd64 go build -tags lambda.norpc -o bootstrap main.go
+      - name: Create ZIP
+        run: zip fssou.zip bootstrap
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v2
+        id: upload-artifact
         with:
-          terraform_version: 1.6.0
-      - name: Terraform Configure
+          name: ${{ env.ARTIFACT_NAME }}
+          path: app/fssou.zip
+  deployment:
+    name: Deployment
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      packages: write
+      deployments: write
+    defaults:
+      run:
         working-directory: infra
-        run: | 
-          echo 'state_bucket="${{ secrets.GCP_TF_STATE_BUCKET }}"' >> generated.auto.tfvars
-          echo 'project_id="${{ secrets.GCP_PROJECT_ID }}"' >> generated.auto.tfvars
-          echo 'project_name="${{ secrets.GCP_PROJECT_NAME }}"' >> generated.auto.tfvars
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        id: artifact
+        with:
+          path: infra
+          name: ${{ env.ARTIFACT_NAME }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          audience: sts.amazonaws.com
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          role-session-name: ${{ env.AWS_ROLE_SESSION_NAME }}
+          role-duration-seconds: 900
+          mask-aws-account-id: true
+          output-credentials: true
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+      - name: Terraform Configure
+        run: |
+          echo 'aws_region="${{ env.AWS_REGION }}"' >> generated.auto.tfvars
           echo 'gh_repo_id="${{ github.repository_id }}"' >> generated.auto.tfvars
+          echo 'gh_repo_name="${{ github.repository }}"' >> generated.auto.tfvars
       - name: Terraform Initialize
-        run: terraform -chdir=infra init
-      - name: Terraform Plan Changes
-        run: terraform -chdir=infra plan -out=${{ github.sha }}.tfplan
-      - name: Terraform Apply Changes
-        run: terraform -chdir=infra apply -auto-approve ${{ github.sha }}.tfplan
+        run: >
+          terraform init
+          -backend-config="bucket=${{ env.TF_STATE_BUCKET_NAME }}"
+          -backend-config="key=terraform/state/${{ github.repository_id }}"
+          -backend-config="region=${{ env.AWS_REGION }}"
+      - name: Terraform Validate
+        run: terraform validate
+      - name: Terraform Plan
+        run: terraform plan -out=${{ github.sha }}.tfplan
+      - name: Terraform Apply
+        run: terraform apply -auto-approve ${{ github.sha }}.tfplan

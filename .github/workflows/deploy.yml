@@ -67,6 +67,8 @@ jobs:
         with:
           path: infra
           name: ${{ env.ARTIFACT_NAME }}
+      - name: List Files
+        run: ls -la
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:

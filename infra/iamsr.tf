@@ -23,6 +23,7 @@ data "aws_iam_policy_document" "role_policy_1" {
 }
 
 resource "aws_iam_policy" "lambda" {
+  path = "/iamsr/lambda/"
   name        = "lambda"
   description = "A policy for lambda ${local.function_name}"
   policy      = data.aws_iam_policy_document.role_policy_1.json

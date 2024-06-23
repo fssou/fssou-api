@@ -4,6 +4,8 @@ resource "aws_lambda_function" "fssou" {
   handler           = "bootstrap"
   filename          = "fssou.zip"
   runtime           = "provided.al2023"
+  publish = true
+
   source_code_hash  = filebase64sha256("fssou.zip")
   role              = aws_iam_role.lambda.arn
   architectures     = ["x86_64"]
@@ -17,4 +19,10 @@ resource "aws_lambda_function" "fssou" {
     variables = {
     }
   }
+}
+
+resource "aws_lambda_alias" "fssou" {
+  name = "live"
+  function_name = aws_lambda_function.fssou.function_name
+  function_version = "$LATEST"
 }

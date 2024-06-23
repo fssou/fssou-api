@@ -20,10 +20,22 @@ data "aws_iam_policy_document" "role_policy_1" {
     ]
     resources = ["*"]
   }
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:CreateNetworkInterface",
+      "ec2:DeleteNetworkInterface",
+      "ec2:DescribeInstances",
+      "ec2:AttachNetworkInterface"
+    ]
+    resources = ["*"]
+    
+  }
 }
 
 resource "aws_iam_policy" "lambda" {
-  path = "/iamsr/lambda/"
+  path        = "/iamsr/lambda/"
   name        = "lambda"
   description = "A policy for lambda ${local.function_name}"
   policy      = data.aws_iam_policy_document.role_policy_1.json

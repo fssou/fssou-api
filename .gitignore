@@ -11,4 +11,3 @@
 *.dll
 *.so
 *.dylib
-go.sum

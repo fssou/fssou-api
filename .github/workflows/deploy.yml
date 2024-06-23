@@ -37,7 +37,10 @@ jobs:
           go-version-file: app/go.mod
           cache-dependency-path: "**/*.sum"
       - name: Build
-        run: GOOS=linux GOARCH=amd64 go build -tags lambda.norpc -o bootstrap main.go
+        run: go build -tags lambda.norpc -o bootstrap main.go
+        env:
+          GOOS: linux
+          GOARCH: amd64
       - name: Create ZIP
         run: zip fssou.zip bootstrap
       - name: Upload ZIP

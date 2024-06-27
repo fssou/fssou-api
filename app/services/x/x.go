@@ -19,7 +19,6 @@ func init() {
 
 func New(ctx context.Context) (*X, error) {
 	httpClient := http.DefaultClient
-	log.Println("Xray client set")
 	var secretsValue Credentials
 	secretsName, exists := os.LookupEnv("X_SECRETS_NAME")
 	if !exists {
@@ -28,6 +27,7 @@ func New(ctx context.Context) (*X, error) {
 	}
 	secretsManager := secretsmanager.New(ctx)
 	secretsValueString, err := secretsManager.GetSecretValueWithCache(secretsName)
+	log.Println("retrieved secrets")
 	if err != nil {
 		log.Printf("error getting secrets: %v\n", err)
 		return nil, err

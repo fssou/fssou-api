@@ -1,11 +1,15 @@
 package x
 
 import (
+	"context"
 	"testing"
 )
 
 func TestMe(t *testing.T) {
-	x := X{}
+	x, err := New(context.Background())
+	if err != nil {
+		t.Errorf("New() retornou um erro: %v", err)
+	}
 	me, err := x.Me()
 	if err != nil {
 		t.Errorf("Me() retornou um erro: %v", err)

@@ -68,6 +68,7 @@ func (x *X) Me() (*TwitterUserMe, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error reading body: %v", err)
 	}
+	defer res.Body.Close()
 
 	var me TwitterUserMe
 	err = json.Unmarshal(body, &me)

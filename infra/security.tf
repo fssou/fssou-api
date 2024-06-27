@@ -5,8 +5,8 @@ resource "aws_security_group" "fssou" {
   description = "Security group for fssou API."
   vpc_id      = data.aws_vpc.default.id
   egress {
-    from_port = -1
-    to_port   = -1
+    from_port = 0
+    to_port   = 0
     protocol  = "-1"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow all traffic out."

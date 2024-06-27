@@ -6,6 +6,7 @@ resource "aws_lambda_function" "fssou" {
   handler       = "bootstrap"
   filename      = "fssou.zip"
   runtime       = "provided.al2023"
+  timeout       = 15
   publish       = true
   source_code_hash = filebase64sha256("fssou.zip")
   role          = aws_iam_role.lambda.arn
@@ -20,6 +21,9 @@ resource "aws_lambda_function" "fssou" {
     variables = {
       X_SECRETS_NAME = aws_secretsmanager_secret.x_credentials.name
     }
+  }
+  tracing_config {
+    mode = "Active"
   }
 }
 

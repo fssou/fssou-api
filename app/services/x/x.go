@@ -14,22 +14,20 @@ import (
 	"os"
 )
 
-var httpClient *http.Client
-
 func init() {
 	log.Println("X init")
-	httpClient = xray.Client(http.DefaultClient)
-	log.Println("Xray client set")
 }
 
 func New(ctx context.Context) (*X, error) {
+	httpClient := xray.Client(http.DefaultClient)
+	log.Println("Xray client set")
 	var secretsValue Credentials
 	secretsName, exists := os.LookupEnv("X_SECRETS_NAME")
 	if !exists {
 		log.Println("X_SECRETS_NAME not found")
 		return nil, fmt.Errorf("X_SECRETS_NAME not found")
 	}
-	secretsManager := secretsmanager.New(context.Background())
+	secretsManager := secretsmanager.New(ctx)
 	secretsValueString, err := secretsManager.GetSecretValueWithCache(secretsName)
 	if err != nil {
 		log.Printf("error getting secrets: %v\n", err)
@@ -42,6 +40,7 @@ func New(ctx context.Context) (*X, error) {
 	}
 	return &X{
 		secretsValue: secretsValue,
+		httpClient:   httpClient,
 	}, nil
 }
 
@@ -62,7 +61,7 @@ func (x *X) Me() (*TwitterUserMe, error) {
 		Token:  x.secretsValue.TokenKey,
 		Secret: x.secretsValue.TokenSecret,
 	}
-	res, err := client.Get(httpClient, &credentialsToken, baseUrl, params)
+	res, err := client.Get(x.httpClient, &credentialsToken, baseUrl, params)
 	if err != nil {
 		return nil, fmt.Errorf("error making request: %v", err)
 	}

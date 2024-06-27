@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	fmt.Println("Lambda cold start")
+	log.Println("Lambda cold start")
 }
 
 func main() {

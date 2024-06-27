@@ -8,29 +8,41 @@ import (
 	"github.com/gomodule/oauth1/oauth"
 	"in.francl.api/services/aws/secretsmanager"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
 )
 
-var secretsValue Credentials
 var httpClient *http.Client
 
 func init() {
+	log.Println("X init")
+	httpClient = xray.Client(http.DefaultClient)
+	log.Println("Xray client set")
+}
+
+func New(ctx context.Context) (*X, error) {
+	var secretsValue Credentials
 	secretsName, exists := os.LookupEnv("X_SECRETS_NAME")
 	if !exists {
-		panic("X_SECRETS_NAME not found")
+		log.Println("X_SECRETS_NAME not found")
+		return nil, fmt.Errorf("X_SECRETS_NAME not found")
 	}
 	secretsManager := secretsmanager.New(context.Background())
 	secretsValueString, err := secretsManager.GetSecretValueWithCache(secretsName)
 	if err != nil {
-		panic(fmt.Errorf("error getting secrets: %v", err))
+		log.Printf("error getting secrets: %v\n", err)
+		return nil, err
 	}
 	err = json.Unmarshal([]byte(secretsValueString), &secretsValue)
 	if err != nil {
-		panic(fmt.Errorf("error unmarshalling secrets: %v", err))
+		log.Printf("error unmarshalling secrets: %v\n", err)
+		return nil, err
 	}
-	httpClient = xray.Client(http.DefaultClient)
+	return &X{
+		secretsValue: secretsValue,
+	}, nil
 }
 
 func (x *X) Me() (*TwitterUserMe, error) {
@@ -38,8 +50,8 @@ func (x *X) Me() (*TwitterUserMe, error) {
 	params := url.Values{}
 	params.Add("user.fields", "created_at,description,entities,id,location,most_recent_tweet_id,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,verified_type,withheld")
 	credentialsConsumer := oauth.Credentials{
-		Token:  secretsValue.ConsumerKey,
-		Secret: secretsValue.ConsumerSecret,
+		Token:  x.secretsValue.ConsumerKey,
+		Secret: x.secretsValue.ConsumerSecret,
 	}
 	client := oauth.Client{
 		Credentials:     credentialsConsumer,
@@ -47,8 +59,8 @@ func (x *X) Me() (*TwitterUserMe, error) {
 	}
 
 	credentialsToken := oauth.Credentials{
-		Token:  secretsValue.TokenKey,
-		Secret: secretsValue.TokenSecret,
+		Token:  x.secretsValue.TokenKey,
+		Secret: x.secretsValue.TokenSecret,
 	}
 	res, err := client.Get(httpClient, &credentialsToken, baseUrl, params)
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"in.francl.api/services/x"
+	"log"
 )
 
 func init() {
@@ -19,10 +20,11 @@ func main() {
 
 func HandleRequest(ctx context.Context, request *events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	if request == nil {
+		log.Println("received nil event")
 		return nil, fmt.Errorf("received nil event")
 	}
-	x := x.X{}
-	me, err := x.Me()
+	twitter := x.New(ctx)
+	me, err := twitter.Me()
 	if err != nil {
 		resp := map[string]interface{}{
 			"error": err.Error(),

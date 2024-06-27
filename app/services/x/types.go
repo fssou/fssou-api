@@ -1,6 +1,8 @@
 package x
 
-type X struct{}
+type X struct {
+	secretsValue Credentials
+}
 
 type TwitterUserMe struct {
 	Data Data `json:"data"`

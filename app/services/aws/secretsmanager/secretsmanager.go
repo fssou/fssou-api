@@ -33,8 +33,8 @@ func New(ctx context.Context) *SecretsManager {
 
 func (s *SecretsManager) GetSecretValue(secretName string) (string, error) {
 	input := &secretsmanager.GetSecretValueInput{
-		SecretId:  aws.String(secretName),
-		VersionId: aws.String("AWSCURRENT"),
+		SecretId:     aws.String(secretName),
+		VersionStage: aws.String("AWSCURRENT"),
 	}
 	output, err := s.client.GetSecretValue(s.ctx, input)
 	if err != nil {

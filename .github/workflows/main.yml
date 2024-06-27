@@ -1,4 +1,4 @@
-name: Deployment Infrastructure
+name: CI CD
 
 on:
   push:
@@ -18,13 +18,16 @@ env:
   TF_STATE_BUCKET_NAME: ${{ secrets.TF_STATE_BUCKET_NAME }}
   ARTIFACT_NAME: fssou-api-${{ github.sha }}
 
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+  deployments: write
+
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     defaults:
       run:
         working-directory: app
@@ -53,11 +56,6 @@ jobs:
     name: Deployment
     runs-on: ubuntu-latest
     needs: build
-    permissions:
-      id-token: write
-      contents: read
-      packages: write
-      deployments: write
     defaults:
       run:
         working-directory: infra
@@ -70,8 +68,6 @@ jobs:
         with:
           path: infra
           name: ${{ env.ARTIFACT_NAME }}
-      - name: List Files
-        run: ls -la
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:

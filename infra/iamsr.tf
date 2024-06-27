@@ -1,3 +1,10 @@
+# iamsr.tf
+
+resource "aws_iam_role" "lambda" {
+  path               = "/iamsr/lambda/"
+  name               = local.function_name
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
 
 data "aws_iam_policy_document" "assume_role" {
   statement {
@@ -8,46 +15,4 @@ data "aws_iam_policy_document" "assume_role" {
     }
     actions = ["sts:AssumeRole"]
   }
-}
-
-data "aws_iam_policy_document" "role_policy_1" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:PutLogEvents"
-    ]
-    resources = ["*"]
-  }
-  statement {
-    effect = "Allow"
-    actions = [
-      "ec2:DescribeNetworkInterfaces",
-      "ec2:CreateNetworkInterface",
-      "ec2:DeleteNetworkInterface",
-      "ec2:DescribeInstances",
-      "ec2:AttachNetworkInterface"
-    ]
-    resources = ["*"]
-    
-  }
-}
-
-resource "aws_iam_policy" "lambda" {
-  path        = "/iamsr/lambda/"
-  name        = "lambda"
-  description = "A policy for lambda ${local.function_name}"
-  policy      = data.aws_iam_policy_document.role_policy_1.json
-}
-
-resource "aws_iam_role_policy_attachment" "lambda" {
-  policy_arn = aws_iam_policy.lambda.arn
-  role       = aws_iam_role.lambda.name
-}
-
-resource "aws_iam_role" "lambda" {
-  path               = "/iamsr/lambda/"
-  name               = local.function_name
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }

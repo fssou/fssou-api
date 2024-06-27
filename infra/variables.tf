@@ -1,3 +1,5 @@
+# variables.tf
+
 variable "aws_region" {
   type = string
 }

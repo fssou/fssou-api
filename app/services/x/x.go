@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/gomodule/oauth1/oauth"
 	"in.francl.api/services/aws/secretsmanager"
 	"io"
@@ -19,7 +18,7 @@ func init() {
 }
 
 func New(ctx context.Context) (*X, error) {
-	httpClient := xray.Client(http.DefaultClient)
+	httpClient := http.DefaultClient
 	log.Println("Xray client set")
 	var secretsValue Credentials
 	secretsName, exists := os.LookupEnv("X_SECRETS_NAME")

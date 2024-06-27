@@ -26,7 +26,7 @@ func New(ctx context.Context) (*X, error) {
 		return nil, fmt.Errorf("X_SECRETS_NAME not found")
 	}
 	secretsManager := secretsmanager.New(ctx)
-	secretsValueString, err := secretsManager.GetSecretValueWithCache(secretsName)
+	secretsValueString, err := secretsManager.GetSecretValue(secretsName)
 	log.Println("retrieved secrets")
 	if err != nil {
 		log.Printf("error getting secrets: %v\n", err)

@@ -23,7 +23,20 @@ func HandleRequest(ctx context.Context, request *events.APIGatewayProxyRequest) 
 		log.Println("received nil event")
 		return nil, fmt.Errorf("received nil event")
 	}
-	twitter := x.New(ctx)
+	twitter, err := x.New(ctx)
+	if err != nil {
+		resp := map[string]interface{}{
+			"error": err.Error(),
+		}
+		body, _ := json.Marshal(resp)
+		return &events.APIGatewayProxyResponse{
+			StatusCode:        500,
+			Body:              string(body),
+			Headers:           map[string]string{},
+			MultiValueHeaders: map[string][]string{},
+			IsBase64Encoded:   false,
+		}, nil
+	}
 	me, err := twitter.Me()
 	if err != nil {
 		resp := map[string]interface{}{

@@ -30,7 +30,7 @@ resource "aws_iam_policy" "policy_base" {
   policy      = data.aws_iam_policy_document.policy_base.json
 }
 
-resource "aws_iam_role_policy_attachment" "lambda" {
-  policy_arn = aws_iam_policy.policy_base.arn
+resource "aws_iam_role_policy_attachment" "lambda_base" {
   role       = aws_iam_role.lambda.name
+  policy_arn = aws_iam_policy.policy_base.arn
 }

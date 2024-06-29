@@ -12,6 +12,7 @@ resource "aws_lambda_function" "fssou" {
   role          = aws_iam_role.lambda.arn
   architectures = ["x86_64"]
   vpc_config {
+    ipv6_allowed_for_dual_stack = true
     subnet_ids = data.aws_subnets.all.ids
     security_group_ids = [
       aws_security_group.fssou.id

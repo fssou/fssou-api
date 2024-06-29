@@ -42,3 +42,7 @@ resource "aws_iam_role_policy_attachment" "lambda_base_full_access" {
   role       = aws_iam_role.lambda.name
   policy_arn = "arn:aws:iam::aws:policy/AWSLambda_FullAccess"
 }
+resource "aws_iam_role_policy_attachment" "lambda_base_xray_access" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
+}

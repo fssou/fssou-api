@@ -34,3 +34,11 @@ resource "aws_iam_role_policy_attachment" "lambda_base" {
   role       = aws_iam_role.lambda.name
   policy_arn = aws_iam_policy.policy_base.arn
 }
+resource "aws_iam_role_policy_attachment" "lambda_base_vpc_access" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+resource "aws_iam_role_policy_attachment" "lambda_base_full_access" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSLambda_FullAccess"
+}

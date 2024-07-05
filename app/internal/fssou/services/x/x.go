@@ -14,7 +14,7 @@ type X struct {
 }
 
 func New(ctx context.Context, credentials *Credentials, httpClient http.Client) (*X, error) {
-	baseURL := "https://api.twitter.com/2"
+	baseURL := "https://api.twitter.com"
 	if httpClient == nil {
 		var err interface{} = nil
 		httpClient, err = http.New(ctx, baseURL, &http.CredentialsOAuth1{
@@ -35,7 +35,7 @@ func New(ctx context.Context, credentials *Credentials, httpClient http.Client) 
 }
 
 func (x *X) UsersMe() (*TwitterUserMe, error) {
-	path := "/users/me"
+	path := "/2/users/me"
 	params := http.Params{
 		"user.fields": "created_at,description,entities,id,location,most_recent_tweet_id,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,verified_type,withheld",
 	}

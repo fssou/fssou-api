@@ -11,16 +11,9 @@ resource "aws_lambda_function" "fssou" {
   source_code_hash = fileexists("fssou.zip") ? filebase64sha256("fssou.zip") : null
   role          = aws_iam_role.lambda.arn
   architectures = ["x86_64"]
-  vpc_config {
-    ipv6_allowed_for_dual_stack = true
-    subnet_ids = data.aws_subnets.private.ids
-    security_group_ids = [
-      aws_security_group.fssou.id
-    ]
-  }
   environment {
     variables = {
-      X_SECRETS_NAME = aws_secretsmanager_secret.x_credentials.name
+      SECRET_CREDENTIALS_X = var.secret_credentials_x
     }
   }
   tracing_config {

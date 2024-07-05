@@ -8,10 +8,6 @@ import (
 	"log"
 )
 
-func init() {
-	log.Println("SecretsManager init")
-}
-
 type SecretsManager struct {
 	ctx    context.Context
 	client *secretsmanager.Client

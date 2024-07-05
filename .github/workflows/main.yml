@@ -39,8 +39,11 @@ jobs:
         with:
           go-version-file: app/go.mod
           cache-dependency-path: "**/*.sum"
+      - name: Test
+        run: go test -v ./...
+
       - name: Build
-        run: go build -tags lambda.norpc -o bootstrap main.go
+        run: go build -tags lambda.norpc -o bootstrap cmd/fssou/main.go
         env:
           GOOS: linux
           GOARCH: amd64
@@ -96,6 +99,13 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
       - name: Terraform Plan
-        run: terraform plan -out=${{ github.sha }}.tfplan
+        run: >
+          terraform plan
+          -var="secret_credentials_x=${{ secrets.CREDENTIALS_X }}"
+          -out=${{ github.sha }}.tfplan
       - name: Terraform Apply
-        run: terraform apply -auto-approve ${{ github.sha }}.tfplan
+        run: >
+          terraform apply
+          -var="secret_credentials_x=${{ secrets.CREDENTIALS_X }}"
+          -auto-approve
+          ${{ github.sha }}.tfplan

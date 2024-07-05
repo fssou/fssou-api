@@ -1,30 +1,33 @@
-package main
+package fssou
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-lambda-go/lambda"
-	"in.francl.api/services/x"
+	"in.francl.api/internal/fssou/services/x"
 	"log"
+	"os"
 )
 
-func init() {
-	log.Println("Lambda cold start")
-}
-
-func main() {
-	lambda.Start(HandleRequest)
-}
-
-func HandleRequest(ctx context.Context, request *events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
+func Handler(ctx context.Context, request *events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	log.Println("received event")
+	secretsXJsonString, exists := os.LookupEnv("SECRET_CREDENTIALS_X")
+	if !exists {
+		log.Println("SECRET_CREDENTIALS_X not found")
+		return nil, fmt.Errorf("SECRET_CREDENTIALS_X not found")
+	}
+	var credentials *x.Credentials
+	err := json.Unmarshal([]byte(secretsXJsonString), credentials)
+	if err != nil {
+		log.Printf("error unmarshalling secrets: %v\n", err)
+		return nil, err
+	}
 	if request == nil {
 		log.Println("received nil event")
 		return &events.APIGatewayProxyResponse{}, fmt.Errorf("received nil event")
 	}
-	twitter, err := x.New(ctx)
+	twitter, err := x.New(ctx, credentials, nil)
 	if err != nil {
 		resp := map[string]interface{}{
 			"error": err.Error(),
@@ -39,7 +42,7 @@ func HandleRequest(ctx context.Context, request *events.APIGatewayProxyRequest) 
 		}, nil
 	}
 	log.Println("created x")
-	me, err := twitter.Me()
+	me, err := twitter.UsersMe()
 	if err != nil {
 		resp := map[string]interface{}{
 			"error": err.Error(),

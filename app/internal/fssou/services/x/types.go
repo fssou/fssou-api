@@ -1,12 +1,5 @@
 package x
 
-import "net/http"
-
-type X struct {
-	secretsValue Credentials
-	httpClient   *http.Client
-}
-
 type TwitterUserMe struct {
 	Data Data `json:"data"`
 }

@@ -1,13 +1,32 @@
+
+# Genenral
+HELPME.md
+
+# IDEA
 .idea
 
-
+# VSCode
 .vscode
-.terraform
-*.hcl
-*.auto.tfvars
+*.code-workspace
 
 # golang
 *.exe
 *.dll
 *.so
 *.dylib
+vendor/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Terraform
+*.tfstate
+*.tfstate.backup
+*.tfplan
+.terraform
+*.hcl
+*.auto.tfvars

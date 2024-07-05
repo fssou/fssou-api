@@ -101,7 +101,7 @@ jobs:
       - name: Terraform Plan
         run: >
           terraform plan
-          -var="secret_credentials_x=${{ secrets.CREDENTIALS_X }}"
+          -var='secret_credentials_x=${{ secrets.CREDENTIALS_X }}'
           -out=${{ github.sha }}.tfplan
       - name: Terraform Apply
         run: terraform apply -auto-approve ${{ github.sha }}.tfplan

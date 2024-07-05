@@ -17,7 +17,7 @@ func Handler(ctx context.Context, request *events.APIGatewayProxyRequest) (*even
 		log.Println("SECRET_CREDENTIALS_X not found")
 		return nil, fmt.Errorf("SECRET_CREDENTIALS_X not found")
 	}
-	var credentials *x.Credentials
+	var credentials x.Credentials
 	err := json.Unmarshal([]byte(secretsXJsonString), &credentials)
 	if err != nil {
 		log.Printf("error unmarshalling secrets: %v\n", err)
@@ -27,7 +27,7 @@ func Handler(ctx context.Context, request *events.APIGatewayProxyRequest) (*even
 		log.Println("received nil event")
 		return &events.APIGatewayProxyResponse{}, fmt.Errorf("received nil event")
 	}
-	twitter, err := x.New(ctx, credentials, nil)
+	twitter, err := x.New(ctx, &credentials, nil)
 	if err != nil {
 		resp := map[string]interface{}{
 			"error": err.Error(),

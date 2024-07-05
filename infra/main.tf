@@ -26,3 +26,8 @@ resource "aws_lambda_alias" "fssou" {
   function_name    = aws_lambda_function.fssou.function_name
   function_version = "$LATEST"
 }
+
+resource "aws_lambda_function_url" "fssou" {
+  authorization_type = "NONE"
+  function_name      = aws_lambda_function.fssou.function_name
+}

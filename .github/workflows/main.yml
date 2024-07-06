@@ -109,7 +109,7 @@ jobs:
           cat terraform-apply.txt
       - name: Extract Lambda Function URL on Terraform Apply Output
         run: |
-          echo "$(sed -n 's/^lambda_function_url = "\(.*\)"/\1/p' terraform-apply.txt)" > lambda-function-url.txt
+          grep '^lambda_function_url = .*' terraform-apply.txt | awk -F= '{print $2}' > lambda-function-url.txt
           cat lambda-function-url.txt
       - name: Upload Artifact with Function URL
         uses: actions/upload-artifact@v4

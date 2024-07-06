@@ -111,8 +111,9 @@ jobs:
         run: >
           sed -n 's/^lambda_function_url = "\(.*\)"/\1/p' terraform-apply.txt
           | tee lambda-function-url.txt
+          || exit 1
       - name: Upload Artifact with Function URL
         uses: actions/upload-artifact@v4
         with:
           name: lambda-function-url
-          path: lambda-function-url.txt
+          path: infra/lambda-function-url.txt

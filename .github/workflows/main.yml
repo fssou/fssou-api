@@ -41,7 +41,6 @@ jobs:
           cache-dependency-path: "**/*.sum"
       - name: Test
         run: go test -v ./...
-
       - name: Build
         run: go build -tags lambda.norpc -o bootstrap cmd/fssou/main.go
         env:
@@ -104,15 +103,4 @@ jobs:
           -var='secret_credentials_x=${{ secrets.CREDENTIALS_X }}'
           -out=${{ github.sha }}.tfplan
       - name: Terraform Apply
-        run: |
-          terraform apply -auto-approve ${{ github.sha }}.tfplan > terraform-apply.txt
-          cat terraform-apply.txt
-      - name: Extract Lambda Function URL on Terraform Apply Output
-        run: |
-          sed -n 's/^lambda_function_url = "\(.*\)"/\1/p' terraform-apply.txt > lambda-function-url.txt
-          cat lambda-function-url.txt
-      - name: Upload Artifact with Function URL
-        uses: actions/upload-artifact@v4
-        with:
-          name: lambda-function-url
-          path: infra/lambda-function-url.txt
+        run: terraform apply -auto-approve ${{ github.sha }}.tfplan

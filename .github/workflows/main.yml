@@ -13,7 +13,6 @@ on:
 env:
   AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
   AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-  AWS_REGION: ${{ secrets.AWS_REGION }}
   AWS_ROLE_SESSION_NAME: github-actions-${{ github.run_id }}
   TF_STATE_BUCKET_NAME: ${{ secrets.TF_STATE_BUCKET_NAME }}
   ARTIFACT_NAME: fssou-api-${{ github.sha }}
@@ -109,7 +108,7 @@ jobs:
           cat terraform-apply.txt
       - name: Extract Lambda Function URL on Terraform Apply Output
         run: |
-          grep '^lambda_function_url = .*' terraform-apply.txt | awk -F= '{print $2}' > lambda-function-url.txt
+          sed -n 's/^lambda_function_url = "\(.*\)"/\1/p' terraform-apply.txt > lambda-function-url.txt
           cat lambda-function-url.txt
       - name: Upload Artifact with Function URL
         uses: actions/upload-artifact@v4

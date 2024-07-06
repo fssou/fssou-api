@@ -11,6 +11,7 @@ on:
       - main
 
 env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
   AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
   AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
   AWS_ROLE_SESSION_NAME: github-actions-${{ github.run_id }}

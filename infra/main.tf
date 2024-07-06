@@ -35,7 +35,7 @@ resource "aws_lambda_function_url" "fssou" {
     allow_credentials = true
     expose_headers = ["*"]
     allow_origins = ["*"]
-    allow_methods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allow_methods = ["*"]
     allow_headers = ["*"]
   }
 }

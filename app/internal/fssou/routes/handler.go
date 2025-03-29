@@ -1,14 +1,13 @@
 package routes
 
 import (
-	"context"
 	"github.com/aws/aws-lambda-go/events"
 	"strings"
 )
 
 // RouteHandler Interface para os handlers de rota
 type RouteHandler interface {
-	Handle(ctx context.Context, request events.APIGatewayProxyRequest, pathParams map[string]string) (events.APIGatewayProxyResponse, error)
+	Handle(ctx events.LambdaFunctionURLRequestContext, request events.LambdaFunctionURLRequest, pathParams map[string]string) (events.LambdaFunctionURLResponse, error)
 }
 
 // FindHandler Encontra o handler para uma determinada rota e extrai pathParams

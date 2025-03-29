@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-lambda-go/events"
-	"in.francl.api/internal/fssou/routes"
+	"in.francl.api/internal/fssou/routes/entities"
 	"io"
 	"io/ioutil"
 	"log"
@@ -21,7 +21,7 @@ func (h *DiscordLogin) Handle(ctx context.Context, request events.LambdaFunction
 	config, err := loadConfig()
 	if err != nil {
 		log.Printf("Erro ao carregar configurações: %v", err)
-		body := &routes.ErrorResponse{
+		body := &entities.ErrorResponse{
 			Code:    "500",
 			Message: "Internal Server Error",
 		}
@@ -53,7 +53,7 @@ func (h *DiscordCallback) Handle(ctx context.Context, request events.LambdaFunct
 	// Extrai o código de autorização
 	code, ok := request.QueryStringParameters["code"]
 	if !ok || code == "" {
-		body := &routes.ErrorResponse{
+		body := &entities.ErrorResponse{
 			Code:    "400",
 			Message: "Código de autorização não fornecido",
 		}

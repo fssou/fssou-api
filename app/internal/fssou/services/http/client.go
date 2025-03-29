@@ -3,11 +3,12 @@ package http
 import (
 	"context"
 	"fmt"
-	"github.com/gomodule/oauth1/oauth"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
+
+	"github.com/gomodule/oauth1/oauth"
 )
 
 type client struct {
@@ -64,6 +65,7 @@ func (c *client) Get(path string, params *Params) (*Response, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error reading body: %v", err)
 	}
+
 	defer func(body io.ReadCloser) {
 		err := body.Close()
 		if err != nil {

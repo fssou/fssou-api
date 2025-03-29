@@ -21,6 +21,10 @@ type Data struct {
 	Protected         bool     `json:"protected"`
 }
 
+type TwitterUser struct {
+	Data Data `json:"data"`
+}
+
 type Entities struct {
 	URL         Entity `json:"url"`
 	Description Entity `json:"description"`

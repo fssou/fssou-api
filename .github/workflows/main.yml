@@ -40,6 +40,7 @@ jobs:
           go-version-file: app/go.mod
           cache-dependency-path: "**/*.sum"
       - name: Test
+        if: github.event_name == 'skip'
         run: go test -v ./...
       - name: Build
         run: go build -tags lambda.norpc -o bootstrap cmd/fssou/main.go

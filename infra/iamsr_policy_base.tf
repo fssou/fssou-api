@@ -6,7 +6,7 @@ data "aws_iam_policy_document" "policy_base" {
     actions = [
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
-      "logs:PutLogEvents"
+      "logs:PutLogEvents",
     ]
     resources = ["*"]
   }
@@ -17,9 +17,18 @@ data "aws_iam_policy_document" "policy_base" {
       "ec2:CreateNetworkInterface",
       "ec2:DeleteNetworkInterface",
       "ec2:DescribeInstances",
-      "ec2:AttachNetworkInterface"
+      "ec2:AttachNetworkInterface",
     ]
     resources = ["*"]
+  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "ssm:GetParameter",
+    ]
+    resources = [
+      "arn:aws:ssm:*:*:parameter/fssou/*",
+    ]
   }
 }
 

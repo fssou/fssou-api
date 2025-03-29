@@ -1,13 +1,14 @@
 package routes
 
 import (
+	"context"
 	"github.com/aws/aws-lambda-go/events"
 	"in.francl.api/internal/fssou/routes/hello"
 	"log"
 	"net/http"
 )
 
-func RegisterRoutes(ctx events.LambdaFunctionURLRequestContext, request events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
+func RegisterRoutes(ctx context.Context, request events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
 	log.Printf("Received request: %v", request)
 
 	router := NewRouter()

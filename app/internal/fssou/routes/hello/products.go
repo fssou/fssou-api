@@ -1,6 +1,7 @@
 package hello
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/aws/aws-lambda-go/events"
 	"log"
@@ -10,7 +11,7 @@ import (
 // ListarProdutosHandler Handlers das rotas
 type ListarProdutosHandler struct{}
 
-func (h *ListarProdutosHandler) Handle(ctx events.LambdaFunctionURLRequestContext, request events.LambdaFunctionURLRequest, pathParams map[string]string) (events.LambdaFunctionURLResponse, error) {
+func (h *ListarProdutosHandler) Handle(ctx context.Context, request events.LambdaFunctionURLRequest, pathParams map[string]string) (events.LambdaFunctionURLResponse, error) {
 	produtos := []map[string]interface{}{
 		{"id": 1, "nome": "Produto A", "preco": 10.99},
 		{"id": 2, "nome": "Produto B", "preco": 25.50},
@@ -32,7 +33,7 @@ func (h *ListarProdutosHandler) Handle(ctx events.LambdaFunctionURLRequestContex
 
 type CriarProdutoHandler struct{}
 
-func (h *CriarProdutoHandler) Handle(ctx events.LambdaFunctionURLRequestContext, request events.LambdaFunctionURLRequest, pathParams map[string]string) (events.LambdaFunctionURLResponse, error) {
+func (h *CriarProdutoHandler) Handle(ctx context.Context, request events.LambdaFunctionURLRequest, pathParams map[string]string) (events.LambdaFunctionURLResponse, error) {
 	var produto map[string]interface{}
 	err := json.Unmarshal([]byte(request.Body), &produto)
 	if err != nil {
@@ -53,7 +54,7 @@ func (h *CriarProdutoHandler) Handle(ctx events.LambdaFunctionURLRequestContext,
 
 type ObterProdutoHandler struct{}
 
-func (h *ObterProdutoHandler) Handle(ctx events.LambdaFunctionURLRequestContext, request events.LambdaFunctionURLRequest, pathParams map[string]string) (events.LambdaFunctionURLResponse, error) {
+func (h *ObterProdutoHandler) Handle(ctx context.Context, request events.LambdaFunctionURLRequest, pathParams map[string]string) (events.LambdaFunctionURLResponse, error) {
 	id := pathParams["id"]
 
 	// Simula a busca do produto por ID
